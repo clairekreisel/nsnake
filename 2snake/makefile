@@ -1,6 +1,6 @@
 2snake_cli: out/2snake.o out/ncurses_display.o
 	mkdir -p compiled
-	gcc out/2snake.o out/ncurses_display.o -o compiled/2snake_cli
+	gcc out/2snake.o out/ncurses_display.o -lncurses -o compiled/2snake_cli
 
 out/2snake.o: 2snake.c display.h settings.h
 	mkdir -p out
