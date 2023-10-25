@@ -10,6 +10,10 @@ void render_display_changes(char* field, unsigned char perspective);
 
 void display_message(char* message); //Assumes null terminated char array
 
+void display_error_char(char error);
+
+void debug_show_posz(char* posz, char* field, int len);
+
 /*
 Valid input options:
 "q" -- Quit

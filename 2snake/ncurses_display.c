@@ -12,7 +12,12 @@ void init_display(void){
     for(int i = 0; i < FIELD_SIZE + 2; i++){
         move(BASE_X+i, BASE_Y);
         for(int j = 0; j < FIELD_SIZE + 2; j++){
-            addch(219);
+            if(j == 0 || j == FIELD_SIZE + 2){
+                addch('+');
+            }
+            else{
+                addch(j+47);
+            }
         }
     }
     for(int i = 0; i < FIELD_SIZE; i++){
@@ -30,12 +35,16 @@ void end_display(void){
 
 void render_display_changes(char* field, unsigned char perspective){
     for(int i = 0; i < FIELD_SIZE*FIELD_SIZE; i++){
-        if(i%FIELD_SIZE == 0){
+        /*if(i%FIELD_SIZE == 0 && i != 0){
             move(BASE_X+i/FIELD_SIZE+1, BASE_Y+1);
-        }
+        }*/
+        move(BASE_X-5, BASE_Y+i);
+        addch(field[i]+48);
+        move(BASE_X+i/FIELD_SIZE+1, BASE_Y+1+i%FIELD_SIZE);
+        //addch(field[i]);
         switch(field[i]){
             case 0:
-                addch((i/FIELD_SIZE)+48);
+                addch(' ');
                 break;
             case 1:
                 addch('S');
@@ -44,14 +53,32 @@ void render_display_changes(char* field, unsigned char perspective){
                 addch('O');
                 break;
         }
+
     }
+    
     refresh();
+}
+
+void debug_show_posz(char* posz, char* field, int len){
+    for(int i = 0; i < len; i++){
+        move(BASE_X-3, BASE_Y+i);
+        addch(*(posz+i));
+        move(BASE_X-2, BASE_Y+i);
+        addch(*(field+*(posz+i)));
+    }
 }
 
 void display_message(char* message){ //Assumes null terminated char array
     mvprintw(BASE_X+FIELD_SIZE+3, BASE_Y, "%s", message);
     refresh();
 }
+
+void display_error_char(char error){
+    mvprintw(BASE_X+FIELD_SIZE+5, BASE_Y, "Error char: %c", error);
+    refresh();
+}
+
+
 /*
 Valid return values:
 {q} -- Quit
@@ -65,7 +92,10 @@ char* take_input(int dimensions){
     char raw_in[254];
     getstr(raw_in);
     move(BASE_X+FIELD_SIZE+2, BASE_Y);
-    for(int i = 0; i<254; i++){addch(' ');}
+    for(int i = 0; i<254; i++){
+        addch(' ');
+        move(BASE_X+FIELD_SIZE+2, BASE_Y+i);
+    }
     switch(raw_in[0]){
         case 'q':
             char result_q = 'q';
